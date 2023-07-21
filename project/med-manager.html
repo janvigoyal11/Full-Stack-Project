@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meds Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="script/angular.min.js"></script>
+
+    <script>
+       var module=angular.module("myModule",[]);
+        module.controller("myController",function($scope,$http){
+            setActiveUser();
+
+            function setActiveUser(){
+                if(localStorage.getItem("active")==undefined){
+                location.href="index.html";
+                return;
+            }
+            var au=localStorage.getItem("active");
+            $("#txtEmail").val(au).prop("readonly",true);
+            }
+
+            $("#logout").click(function(){
+            localStorage.removeItem("active");
+            location.href="index.html";
+    })
+
+            $scope.JsonArr;
+            $scope.getRecord=function(){
+                var email=$("#txtEmail").val();
+                var url="/grecords?kuchEmail="+email;
+                // alert(email);
+                $http.get(url).then(done,fail);
+                function done(resp){
+                    // alert(JSON.stringify(resp.data));
+                    $scope.JsonArr=resp.data;
+                }
+                function fail(resp){
+                    alert(resp.data);
+                }
+            }
+
+            $scope.doDel=function(srno){
+                if(confirm("U sure the Medicine is Unavailabe?")==false)
+                return;
+                var url="/del-records?kuchsr="+srno;
+                // alert(srno);
+                var email=$("#txtEmail").val();
+                $http.get(url).then(done,fail);
+                function done(resp){
+                    alert(JSON.stringify(resp.data));
+                    $scope.JsonArr=resp.data;
+                    getRecord(email);
+                }
+                function fail(resp){
+                    alert(resp.data);
+                }
+            }
+        })
+    </script>
+
+</head>
+
+<body ng-app="myModule" ng-controller="myController">
+    <center>
+        <nav class="navbar navbar-expand-lg mb-4" style="background-color: #ffc107; height: 70px;">
+                <div class="container-fluid">
+                    <p class="navbar-brand" style="font-size: 35px; margin: auto">Keep record of your Medicines!</p>
+                        <form class="d-flex" role="search">
+                            <button class="btn btn-outline-dark me-5" id="logout" type="submit">LogOut</button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+<br><br>
+            <div class="row">
+                <div class="col-md-2 offset-md-1"><label class="form-label">Email ID</label></div>
+                <div class="col-md-5"><input type="email" class="form-control" id="txtEmail"></div>
+                <div class="col-md-3"><input type="button" class="btn btn-warning" value="Get Record" ng-click="getRecord();"></div>
+            </div>
+<br><br><br>
+            <table class="table table-striped table-dark table-hover">
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Email Id</th>
+                    <th>Medicine Name</th>
+                    <th>Expiry Date</th>
+                    <th>Packaging</th>
+                    <th>Quantity</th>
+                    <th>Operations</th>
+                    
+                <tr ng-repeat="obj in JsonArr">
+                    <td>{{$index+1}}</td>
+                    <td>{{obj.email}}</td>
+                    <td>{{obj.med_name}}</td>
+                    <td>{{obj.exp}}</td>
+                    <td>{{obj.packing}}</td>
+                    <td>{{obj.qty}}</td>
+                    <td>
+                        <input type="button" class="btn btn-outline-danger" value="Unavail" ng-click="doDel(obj.srno);">
+                    </td>
+                </tr>
+                </tr>
+            </table>
+          
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+                crossorigin="anonymous"></script>
+</body>
+
+</html>

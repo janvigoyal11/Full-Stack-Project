@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Recepient</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="script/angular.min.js"></script>
+    <script>
+        var module=angular.module("myModule",[]);
+        module.controller("myController",function($scope,$http){
+            $scope.JsonArr;
+
+$scope.doFetch=function(){
+    var url="/get-rece-records";
+    $http.get(url).then(done,fail);
+    function done(resp){
+        // alert(JSON.stringify(resp.data));
+        $scope.JsonArr=resp.data;
+    }
+    function fail(resp){
+        alert(resp.data);
+    }
+}
+        })
+    </script>
+    
+</head>
+<body ng-app="myModule" ng-controller="myController">
+    <center>
+        <br><br>
+        <input type="button" class="btn btn-info" value="Fetch-Records" ng-click="doFetch();">
+        <br><br><br>
+        <table class="table table-striped table-dark table-hover">
+            <tr>
+                <th>Sr.No</th>
+                <th>Email id</th>
+                <th>Name</th>
+                <th>Mobile Number</th>
+                <th>DOB</th>
+                <th>Gender</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>State</th>
+                <th>ID Proof</th>
+                <th>Proof Display</th>
+                
+            <tr ng-repeat="obj in JsonArr">
+                <td>{{$index+1}}</td>
+                <td>{{obj.Email}}</td>
+                <td>{{obj.Name}}</td>
+                <td>{{obj.Contact_Number}}</td>
+                <td>{{obj.DOB}}</td>
+                <td>{{obj.Gender}}</td>
+                <td>{{obj.Address}}</td>
+                <td>{{obj.City}}</td>
+                <td>{{obj.State}}</td>
+                <td>{{obj.ID_Proof}}</td>
+                <td>
+                    <img src="uploads/{{obj.Proof_display}}" width="100" height="100">
+                </td>
+            </tr>
+            </tr>
+        </table>
+    </center>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</body>
+</html>

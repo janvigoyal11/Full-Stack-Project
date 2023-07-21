@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile Recepient</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
+    <script>
+        function doPrev(refFile, prevImg) {
+            const [file] = refFile.files
+            if (file) {
+                prevImg.src = URL.createObjectURL(file)
+            }
+        }
+
+        //---------------------------------------------
+
+        $(document).ready(function () {
+
+        setActiveUser();
+        function setActiveUser(){
+        var au=localStorage.getItem("active");
+        $("#txtEmail").val(au).prop("readonly",true);
+        }
+    
+$("#txtEmail").blur(function(){
+    var email=$(this).val();
+    var obj = {
+            type: "get",
+            url: "/disable",
+            data: {
+                kuchEmail: email
+            }
+        }
+$.ajax(obj).done(function(resp){
+    // alert(resp);
+    if(resp=="update")
+        $("#upd").attr("disabled",false);
+    else if(resp=="signup")
+        $("#sign").attr("disabled",false);
+    else if(resp=="empty")
+    alert("Please enter Email ID");
+    else
+    alert(resp);
+}).fail(function(err){
+alert(err);
+})
+
+})
+
+//----------------------------------------------------
+            $("#search").click(function () {
+                var email = $("#txtEmail").val();
+                var obj = {
+                    type: "get",
+                    url: "/get-json",
+                    data: {
+                        kuchEmail: email
+                    }
+                }
+
+                $.ajax(obj).done(function (respJson) {
+                    // alert(JSON.stringify(respJson));
+
+                    $("#name").val(respJson[0].Name);
+                    $("#contact").val(respJson[0].Contact_Number);
+                    $("#dob").val(respJson[0].DOB);
+                    $("#gender").val(respJson[0].Gender);
+                    $("#txtAdd").val(respJson[0].Address);
+                    $("#city").val(respJson[0].City);
+                    $("#state").val(respJson[0].State);
+                    $("#id").val(respJson[0].ID_Proof);
+                    $("#hid").val(respJson[0].Proof_display);
+                    $("#imgPrev").prop("src", "uploads/" + respJson[0].Proof_display);
+
+                }).fail(function (errJson) {
+                    alert(errJson);
+                })
+            })
+        });
+    </script>
+    <style>
+        h1{
+            background-color: #ffc107;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <center>
+        <h1 class="mb-4">Recepient User Profile</h1>
+    </center>
+    <div class="container">
+        <form class="row g-3" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" id="hid" name="hid">
+
+            <div class="form-floating col-md-5 offset-md-1 mt-4">
+                <input type="email" class="form-control" id="txtEmail" name="txtEmail" autofocus placeholder="name@example.com">
+                <label for="floatingInput">Email address</label>
+            </div>
+            <div class="col-md-5 mt-4">
+                <input type="button" class="btn btn-success" id="search" value="Search">
+            </div>
+
+            <div class="row g-3 offset-md-1">
+                <div class="form-floating col-md-5">
+                    <input type="name" name="name" id="name" class="form-control" placeholder="Name">
+                    <label for="floatingInput">Name</label>
+                </div>
+                <div class="form-floating col-md-5">
+                    <input type="contact" name="contact" id="contact" class="form-control" placeholder="Contact Number">
+                    <label for="floatingPassword">Contact Number</label>
+                </div>
+            </div>
+
+            <div class="row g-3 offset-md-1">
+                <div class="col-md-3" class="form-label">
+                    Date of Birth
+                    <br>
+                    <input type="date" name="dob" id="dob" class="form-select">
+                </div>
+                <div class="col-md-3 offset-md-1">
+                    Gender
+                    <select name="gender" id="gender" class="form-select">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Others">Other category</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-10 offset-md-1">
+                <label for="inputAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="txtAdd" name="txtAdd" placeholder="1234 Main St">
+            </div>
+
+            <div class="col-md-3 offset-md-1">
+                <label for="inputCity" class="form-label">City</label>
+                <input list="mycity" name="city" ID="city" class="form-select">
+                <datalist id="mycity">
+                    <option>Rampura Phul</option>
+                    <option>Bathinda</option>
+                    <option>Mumbai</option>
+                    <option>Chandrapur</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Ahmedabad">Ahmedabad</option>
+                    <option value="Pune">Pune</option>
+                    <option value="Jaipur">Jaipur</option>
+                    <option value="Lucknow">Lucknow</option>
+                    <option value="Kochi">Kochi</option>
+                    <option value="Bhubaneswar">Bhubaneswar</option>
+                    <option value="Chandigarh">Chandigarh</option>
+                    <option value="Indore">Indore</option>
+                    <option value="Guwahati">Guwahati</option>
+                    <option value="Patna">Patna</option>
+                    <option value="Dehradun">Dehradun</option>
+                    <option value="Coimbatore">Coimbatore</option>
+                    <option value="Visakhapatnam">Visakhapatnam</option>
+                    <option value="Nagpur">Nagpur</option>
+                </datalist>
+            </div>
+
+            <div class="col-md-3 offset-md-1">
+                <label for="inputState" class="form-label">State</label>
+                <input list="mystate" name="state" id="state" class="form-select">
+                <datalist id="mystate">
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                </datalist>
+            </div>
+            
+            <div class="row g-3 offset-md-1">
+                <div class="col-md-3">
+                    ID Proof
+                    <br>
+                    <select name="id" id="id" class="form-select">
+                        <option value="aadhar">Adhaar Card</option>
+                        <option value="pan">Pan Card</option>
+                        <option value="ration">Ration Card</option>
+                        <option value="birth">Birth Certificate</option>
+                        <option value="drive">Driving License</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 mt-5 offset-md-1">
+                    <input type="file" onchange="doPrev(this,imgPrev)" name="ppic" accept="image/*">
+                </div>
+
+                <div class="col mb-3 mt-2">
+                    <img id="imgPrev" width="220" height="140">
+                </div>
+            </div>
+
+    </div>
+
+
+    <center>
+        <div class="col-10 mb-3 mt-4">
+            <button type="submit" id="sign" formaction="/sign" class="btn btn-primary" disabled>Send to Server</button>
+            <button type="submit" id="upd" formaction="/upd" class="btn btn-warning" disabled>Update Profile</button>
+            <button type="submit" formaction="/del" class="btn btn-danger">Delete your Profile</button>
+        </div>
+    </center>
+    </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
