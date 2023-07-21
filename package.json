@@ -1,0 +1,24 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "-": "^0.0.1",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "file-upload": "^0.0.0",
+    "fileupload": "^0.2.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.4.3",
+    "nodemailer": "^6.9.3",
+    "yarn": "^1.22.19"
+  }
+}
