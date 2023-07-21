@@ -1,1 +1,478 @@
+<!doctype html>
+<html lang="en">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home Index</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+    <style>
+        body{
+            font-family: serif;
+        }
+        .user {
+            background-image: url(pic/user.avif);
+            background-size: contain;
+            margin: auto;
+            margin-top: 15px;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 15px;
+            border-radius: 50%;
+            border: 1px solid black;
+        }
+
+        /* #wait {
+            display: none;
+            height: 150px;
+            width: 150px;
+        } */
+
+        .form-control{
+            width: 300px;
+        }
+
+        .service{
+            font-size: 30px;
+            /* height: 50px; */
+            background-color: #ffc107;
+            margin-top: 25px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        
+.footer {
+  background-color: #ffc107;
+  color: black;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  height: 100px;
+}
+
+.footer p {
+  margin: 0;
+}
+
+.footer a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #eaeaea;
+}
+
+.footer .social-icons {
+  margin-top: 10px;
+}
+
+.footer .social-icons a {
+  display: inline-block;
+  margin-right: 10px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.footer .social-icons a:hover {
+  color: #eaeaea;
+}
+
+.social-icons img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.card{
+    background-color: rgb(43, 42, 42);
+    color: white;
+}
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            var flag = true;
+            $(".fa-solid").click(function () {
+                if (flag == true) {
+                    $(this).removeClass("fa-eye").addClass("fa-eye-slash");
+                    $("#txtPwd").prop("type", "text");
+                    $("#tpwd").prop("type", "text");
+                    flag = false;
+                }
+                else {
+                    $(this).addClass("fa-eye").removeClass("fa-eye-slash");
+                    $("#txtPwd").prop("type", "password");
+                    $("#tpwd").prop("type", "password");
+                    flag = true;
+                }
+            })
+
+            //---------------------------------------------------------------------      
+
+            $("#txtEmail").blur(function () {
+                var emailKu = $(this).val();
+                var obj = {
+                    type: "get",
+                    url: "/chk-email",
+                    data: {
+                        kuchEmail: emailKu
+                    }
+                }
+
+                $.ajax(obj).done(function (resp){
+                    if(resp=="Email ID is already Taken...")
+                    $("#errmail").html(resp).css("color","blue");
+                    else if(resp=="Plz Fill Email ID!")
+                    $("#errmail").html(resp).css("color","blue");
+                    else if(resp="Incorrect Format!")
+                     $("#errmail").html(resp).css("color","red");
+                    else if(resp="Correct Format :)")
+                     $("#errmail").html(resp).css("color","green");
+                    
+                    
+                }).fail(function (err){
+                    $("#errmail").html(err);
+                })
+
+            })
+
+            //------------------------------------------------------
+            $("#txtPwd").blur(function () {
+                var pwdKu = $(this).val();
+                var obj = {
+                    type: "get",
+                    url: "/chk-pwd",
+                    data: {
+                        kuchPwd: pwdKu
+                    }
+                }
+
+                $.ajax(obj).done(function (resp) {
+                    if(resp=="Correct Format :)")
+                    $("#errpass").html(resp).css("color","green");
+                    else if(resp=="Incorrect Format!")
+                    $("#errpass").html(resp).css("color","red");
+                    else
+                    $("#errpass").html(resp);
+                }).fail(function (err) {
+                    $("#errpass").html(err);
+                })
+
+            })
+
+            //--------------------------------------------------------
+
+            $("#show").click(function () {
+                var email = $("#txtEmail").val();
+                var pwd = $("#txtPwd").val();
+                var type = $("#type").val();
+                var obj = {
+                    type: "get",
+                    url: "/chk-submit",
+                    data: {
+                        kuchemail: email,
+                        kuchpwd: pwd,
+                        kuchtype: type
+                    }
+                }
+
+                $.ajax(obj).done(function (resp) {
+                    // alert(resp);
+                    $("#btn-submit").html(resp);
+                }).fail(function (err) {
+                    // alert(err);
+                    $("#btn-submit").html(err);
+                });
+            })
+
+            //----------------------------------
+            //   $(document).ajaxStart(function(){
+            //     $("#wait").css("display","block");
+            //   });
+
+            //   $(document).ajaxStop(function(){
+            //     $("#wait").css("display","none");
+            //   });
+
+            //------------------------------------
+
+            $("#log").click(function () {
+                var email = $("#temail").val();
+                var pwd = $("#tpwd").val();
+                var obj = {
+                    type: "get",
+                    url: "/chk-login",
+                    data: {
+                        kuemail: email,
+                        kupwd: pwd
+                    }
+                };
+
+                $.ajax(obj).done(function (resp){
+                    localStorage.setItem("active",$("#temail").val());
+                    if (resp == "Correct:) Type: Donor")
+                        location.href="dash-donor.html";
+                    else if (resp == "Correct:) Type: Recipient")
+                        location.href="dash-rece.html";
+                    else if(resp=="email")
+                    alert("Please enter Email ID");
+                    else if(resp=="pass")
+                    resp.send("Please Enter the Password!");
+                    else
+                        alert(resp);
+
+                }).fail(function (err) {
+                    $("#btn-login").html(err);
+                });
+            });
+        });
+    </script>
+</head>
+
+
+<body>
+        <nav class="navbar fixed-top mb-5" style="background-color:#ffc107;">
+            <div class="container-fluid">
+                <img src="pic/logo.png" style="width:40px; height:40px;" class="ms-3">
+                <a class="navbar-brand" style="font-size: 30px;font-family: cursive;"><b>LifeBridge</b></a>
+                <form class="d-flex" role="search" method="post">
+                    <button class="btn btn-outline-dark me-3" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        type="button" style="float: right;">SignUp</button>
+                    <button class="btn btn-outline-dark me-4" data-bs-toggle="modal" data-bs-target="#exampleModal2"
+                        type="button" style="float: right;">Login</button>
+                </form>
+            </div>
+        </nav>
+
+        <!--Signup Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel" style="margin-left: 150px;">SIGN-UP Here!</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <center><img src="pic/welcome.gif" style="margin-bottom: 20px;" width="270px" height="140px"></center>
+
+                        <div class="a">
+                            <center>
+                                <form>
+                                    <table>
+                                        <tr>
+                                            <td><label class="form-label">Email Id</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span style="float: left;"><i class="fa-solid fa-users me-2"></i></span>
+                                                <span style="float: left;"><input class="form-control" id="txtEmail" name="txtEmail" type="email" autofocus></span>
+                                            </td>
+                                            <tr><td><div id="errmail">*</div></td></tr>
+                                        </tr>
+
+                                        <tr>
+                                            <td><label class="form-label">Password</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span style="float: left;"><i class="fa-solid fa-users me-2"></i></span>
+                                               <span style="float: left;"><input type="password" name="txtPwd" id="txtPwd" class="form-control"></span>
+                                               <span style="float: left;"><i class="fa-solid fa-eye fa-xl ms-2" style="color: #000000;"></i></span>
+                                            </td>
+                                            <tr><td><div id="errpass">*</div></td></tr>
+                                        </tr>
+
+                                        <tr>
+                                            <td><label for="">Type</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td><select name="type" id="type" class="form-select mb-3">
+                                                    <option value="Donor">Donor</option>
+                                                    <option value="Recipient">Recipient</option>
+                                                </select>
+                                        </tr>
+
+                                    </table>
+                                </form>
+                            </center>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" id="show" style="margin: auto; ">Sign Up</button>
+                        <span id="btn-submit"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- --------------------------------------------------------------------------- -->
+
+        <!--LogIn Modal -->
+        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Already have an account? LogIn here..</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <center><form>
+<table>
+    <tr>
+       <div class="user"></div>
+    </tr>
+    <tr>
+        <tr><label for="inputEmail4" class="form-label">Email</label></tr>
+        <tr><input type="email" class="form-control" id="temail"></tr>
+    </tr>
+    <tr>
+        <tr><label for="inputPassword4" class="form-label mt-3">Password</label></tr>
+        <tr>
+        <th><input type="password" class="form-control" id="tpwd"></th>
+        <th><i class="fa-solid fa-eye fa-xl ms-2" style="color: #000000"></i></th>
+    </tr>
+</table>
+
+                        </form>
+                    </center>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" id="log"
+                            style="margin: auto;">Login</button>
+                        <span id="btn-login"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- carousel -->
+<div class="container mt-5">
+<div id="carouselExampleIndicators" class="carousel slide mt-4" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <center>
+    <div class="carousel-inner mt-3">
+      <div class="carousel-item active">
+        <img src="pic/car2c.png" style="height: 400px">
+      </div>
+      <div class="carousel-item">
+        <img src="pic/carr3.png" style="height: 400px">
+      </div>
+      <div class="carousel-item">
+        <img src="pic/car12.png" style="height: 400px">
+      </div>
+    </div>
+</center>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <center><div class="service">Our Services</div>
+
+    <!-- cards  -->
+<div class="row">
+  <div class="card me-2 ms-3" style="width: 24%; float: left;">
+    <img src="pic/163800857.jpg" class="card-img-top mt-2" height="300px" width="300px"  alt="...">
+    <div class="card-body">
+      <h5 class="card-title">DONATION</h5>
+    <p class="card-text"> Medicine donors play a crucial role in humanitarian efforts worldwide.</p>
+    <p>Donated medicines bridge the gap between affordability and accessibility for many disadvantaged populations.</p>
+    <p>These could register themselves and donate their extra medicines to the people who need it and are not able to afford it.</p>
+    <p>Tihs is a great platform for providing a safe and sound environment for connecting with people and getting benefacted.</p>
+    </div>
+  </div>
+  <div class="card me-2" style="width: 24%; float: left;">
+    <img src="pic/don.png" class="card-img-top mt-2" height="300px" width="300px" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">RECIPIENT</h5>
+      <p class="card-text">Medicine recipients are individuals who receive prescribed medications to treat various health conditions, illnesses, or injuries.</p>
+     <p>The timely and appropriate use of prescribed medications can lead to improved health outcomes for recipients.</p>
+    <p>People who need the medicines but aqre not able to afford or are not acccessible nearby can benifit from our Website.</p>
+<p>Tihs is a great platform for providing a safe and sound environment for connecting with people and getting benefacted.</p>    
+</div>
+  </div>
+  <div class="card me-2" style="width: 24%; float: left;">
+    <img src="pic/terms.png" class="card-img-top mt-2" height="300px" width="300px" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">TERMS & CONDITIONS</h5>
+      <p>The organization not responsible of the flow of medicines between the donor and recipient.</p>
+      <p class="card-text">The website will not interfare under any circumstance as it is the individual's responsibility to contact and accept accordingly.</p>
+      <p>All content, materials, and intellectual property displayed on the Organization's website or other platforms are protected by copyright and other intellectual property laws. Users are not permitted to reproduce, modify, or distribute any content without prior written consent from the Organization.</p>
+    </div>
+  </div>
+  <div class="card" style="width: 24%; float: left;">
+    <img src="pic/nonprofit.jpg" class="card-img-top mt-2" height="300px" width="300px" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">NON-PROFIT ORGANIZATION</h5>
+      <p>This is a Non-profit platform, which means, there is no floe of money of any kind between the transactions.</p>
+      <p>The website purely connects Medicine donr and the Recepient and play no other role.</p>
+      <p class="card-text">The non-profit medicines organization, hereinafter referred to as "the Organization," is dedicated to providing access to essential medications and medical supplies to underserved communities and populations in need. By accessing or using our services, you agree to comply with these terms and conditions.</p>
+      
+    </div>
+  </div>
+</div>
+
+<div class="service">Developed By</div></center>
+<center>
+<div class="row ms-4">
+        <div class="card me-2" style="width: 48%; float: left;">
+            <img src="pic/me2.jpg" class="card-img-top mt-2" style="width: 250px; height: 250px; border-radius: 50%; margin: auto;">
+            <div class="card-body">
+              <h5 class="card-title">Developed By</h5>
+              <p class="card-text">Janvi Goyal</p>
+              <p class="card-text">I am a student of the esteemed <b>Indian Institute of Information Technology, Pune</b>.
+                 Currently pursuing a Bachelor's in Technology in the Computer Science and Engineering (CSE) branch,
+                 I have a genuine passion for exploring the fascinating world of technology and innovation. I firmly believe that technology has the power to solve real-world problems, and my website is a testament to this belief. By tackling a pressing challenge that surrounds us, I aspire to make a positive impact on the lives of many.
+              </p>
+            </div>
+        </div>
+        <div class="card me-2" style="width: 48%; float: left;">
+            <img src="pic/sir.jpg" class="card-img-top mt-2" style="width: 250px; height: 250px; border-radius: 50%; margin: auto;">
+            <div class="card-body">
+              <h5 class="card-title">Under the Guidance of</h5>
+              <p class="card-text">Rajesh Bansal <br> Bangalore Computer Education, <br> Located at Bathinda, Punjab <br>
+            I am Thrilled to work under him as I learnt a lot of things and made it upto here. Without him, it would not have been possible
+            so, I am very grateful to Sir for letting me guide through my journey to reach my goal.
+            </p>
+            </div>
+        </div>
+</div>
+
+<div class="service">Reach US</div></center>
+<div class="row">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3447.8805715959356!2d74.94975317451357!3d30.211955910616492!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391732a4f07278a9%3A0x4a0d6293513f98ce!2sBanglore%20Computer%20Education!5e0!3m2!1sen!2sin!4v1686220639086!5m2!1sen!2sin" height="500" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+</div>
+<footer class="footer">
+    <p>&copy; 2023 LifeBridge. All rights reserved.</p>
+    <div class="social-icons">
+        <a href="https://www.linkedin.com/in/janvi-goyal-73072021a/" target="_blank"><img src="pic/linkedIn.png" alt="WhatsApp"></a>
+      <a href="https://www.facebook.com/yourprofile" target="_blank"><img src="pic/facebook..jpg" alt="Facebook"></a>
+      <a href="https://www.twitter.com/yourprofile" target="_blank"><img src="pic/twitter.jpg" alt="Twitter"></a>
+      <a href="https://www.instagram.com/yourprofile" target="_blank"><img src="pic/instagram.jpg" alt="Instagram"></a>
+    </div>
+  </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
